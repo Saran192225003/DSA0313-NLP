@@ -1,0 +1,19 @@
+import spacy
+
+# Load the spaCy model
+nlp = spacy.load("en_core_web_sm")
+
+def extract_noun_phrases(sentence):
+    doc = nlp(sentence)
+    noun_phrases = []
+    for chunk in doc.noun_chunks:
+        noun_phrases.append((chunk.text, chunk.root.head.text))
+    return noun_phrases
+
+# Example sentence
+sentence = "The quick brown fox jumps over the lazy dog."
+
+noun_phrases = extract_noun_phrases(sentence)
+print("Noun Phrases and their meanings:")
+for np, meaning in noun_phrases:
+    print(f"Noun Phrase: {np}, Meaning: {meaning}")
