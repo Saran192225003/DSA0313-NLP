@@ -1,0 +1,29 @@
+import torch
+from transformers import BertTokenizer, BertModel
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+# Load pre-trained BERT model and tokenizer
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+
+def get_sentence_embedding(sentence):
+    inputs = tokenizer(sentence, return_tensors='pt')
+    outputs = model(**inputs)
+    return outputs.last_hidden_state.mean(dim=1).detach().numpy()
+
+def evaluate_coherence(text):
+    sentences = text.split('. ')
+    embeddings = [get_sentence_embedding(sentence) for sentence in sentences]
+    similarities = []
+    for i in range(len(embeddings) - 1):
+        sim = cosine_similarity(embeddings[i], embeddings[i+1])[0][0]
+        similarities.append(sim)
+    coherence_score = np.mean(similarities)
+    return coherence_score
+
+# Example text
+text = "John went to the store. He bought some milk. Then he went home."
+
+coherence_score = evaluate_coherence(text)
+print("Coherence Score:", coherence_score)
