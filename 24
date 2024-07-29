@@ -1,0 +1,15 @@
+from transformers import pipeline
+
+# Load a pre-trained pipeline for zero-shot classification
+classifier = pipeline("zero-shot-classification")
+
+def recognize_dialog_acts(dialog):
+    candidate_labels = ["statement", "question", "command", "request", "greeting", "farewell"]
+    results = classifier(dialog, candidate_labels)
+    return results
+
+# Example dialog
+dialog = "Can you please help me with my homework?"
+
+dialog_acts = recognize_dialog_acts(dialog)
+print("Dialog Acts:", dialog_acts)
